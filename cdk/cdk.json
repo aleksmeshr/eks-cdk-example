@@ -1,0 +1,9 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/deploy.ts",
+  "requireApproval": "never",
+  "context": {
+    "account": 477332884737,
+    "region": "us-east-1",
+    "@aws-cdk/core:stackRelativeExports": "true"
+  }
+}

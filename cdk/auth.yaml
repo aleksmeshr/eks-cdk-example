@@ -1,0 +1,17 @@
+apiVersion: v1
+data:
+  mapAccounts: '[]'
+  mapRoles: '[{"rolearn":"arn:aws:iam::477332884737:role/blueprint-app1-mycluster1AccessRoleAAE65726-l5gmQiYBnzbC","username":"arn:aws:iam::477332884737:role/blueprint-app1-mycluster1AccessRoleAAE65726-l5gmQiYBnzbC","groups":["system:masters"]},{"rolearn":"arn:aws:iam::477332884737:role/blueprint-app1-blueprintapp1Nodegroupmycluster1ngNo-cmS83UD8izkN","username":"system:node:{{EC2PrivateDNSName}}","groups":["system:bootstrappers","system:nodes"]}]'
+  mapUsers: '[{"userarn":"arn:aws:iam::477332884737:user/admin","groups":["system:masters"]}]'
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"mapAccounts":"[]","mapRoles":"[{\"rolearn\":\"arn:aws:iam::477332884737:role/blueprint-app1-mycluster1AccessRoleAAE65726-l5gmQiYBnzbC\",\"username\":\"arn:aws:iam::477332884737:role/blueprint-app1-mycluster1AccessRoleAAE65726-l5gmQiYBnzbC\",\"groups\":[\"system:masters\"]},{\"rolearn\":\"arn:aws:iam::477332884737:role/blueprint-app1-blueprintapp1Nodegroupmycluster1ngNo-cmS83UD8izkN\",\"username\":\"system:node:{{EC2PrivateDNSName}}\",\"groups\":[\"system:bootstrappers\",\"system:nodes\"]}]","mapUsers":"[]"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"aws.cdk.eks/prune-c80a9aecf668676c52c38f62f18671d8cb02f0504d":""},"name":"aws-auth","namespace":"kube-system"}}
+  creationTimestamp: "2024-01-21T20:32:31Z"
+  labels:
+    aws.cdk.eks/prune-c80a9aecf668676c52c38f62f18671d8cb02f0504d: ""
+  name: aws-auth
+  namespace: kube-system
+  resourceVersion: "1899"
+  uid: 3c8899d0-ddb6-442d-b393-70ea0973ed63
