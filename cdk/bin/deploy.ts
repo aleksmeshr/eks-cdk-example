@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as blueprints from '@aws-quickstart/eks-blueprints';
-import { KubernetesVersion } from 'aws-cdk-lib/aws-eks';
+import { CapacityType, KubernetesVersion, NodegroupAmiType } from 'aws-cdk-lib/aws-eks';
 import { InstanceClass, InstanceSize, InstanceType, } from 'aws-cdk-lib/aws-ec2';
 import { MonitoringStack } from '../lib/monitoring-stack';
 import { DeploymentMode, Mode } from '@aws-quickstart/eks-blueprints';
@@ -20,10 +20,10 @@ const monitoringStack = new MonitoringStack(app, 'MonitoringStack', { env });
 // The catalog of blueprints addons: https://aws-quickstart.github.io/cdk-eks-blueprints/addons/
 
 const coreAddOns: Array<blueprints.ClusterAddOn> = [
-  new blueprints.addons.VpcCniAddOn({
+  new blueprints.addons.VpcCniAddOn(/*{
     enablePrefixDelegation: true,
     warmIpTarget: 4,
-  }),
+  }*/),
   new blueprints.addons.EbsCsiDriverAddOn(),
   new blueprints.addons.CoreDnsAddOn(),
   // To setup Route53 for example for Ngnix Ingress
@@ -52,14 +52,6 @@ const coreAddOns: Array<blueprints.ClusterAddOn> = [
   }),
   // Certificate Manager - Required for the AdotCollectorAddOn
   new blueprints.addons.CertManagerAddOn(),
-  /*new blueprints.addons.AwsNodeTerminationHandlerAddOn({
-    version: '0.22.0',
-    values: {
-      rbac: {
-        pspEnabled: false,
-      },
-    },
-  }),*/
 
   // For per-Pod network security settings. Not compatible with Fargate
   // https://docs.aws.amazon.com/eks/latest/userguide/calico.html
@@ -79,17 +71,17 @@ const observabilityAddOns: Array<blueprints.ClusterAddOn> = [
     // installs Fluent Bit to send container logs,
     // enables CloudWatch Application Signals to send application performance telemetry.
     // https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html
-    //new blueprints.addons.CloudWatchInsights(),
+    new blueprints.addons.CloudWatchInsights(),
 
     // Deploys `aws-for-fluent-bit` Helm chart
     // Probably conflicts with CloudWatchInsights addon.
     // Can send also to Firehose, Kafka, Elastic, S3 and extract embedded metrics
     // https://github.com/aws/eks-charts/tree/master/stable/aws-for-fluent-bit
-    new blueprints.addons.CloudWatchLogsAddon({
+    /*new blueprints.addons.CloudWatchLogsAddon({
       //version: '0.1.32',
       logGroupPrefix: '/eks/mycluster1',
       logRetentionDays: 10,
-    }),
+    }),*/
 
     // OpenTelemetry Collector, should be before CloudWatchAdotAddOn and AmpAddOn
     new blueprints.addons.AdotCollectorAddOn(),
@@ -164,7 +156,17 @@ const addOns: Array<blueprints.ClusterAddOn> = [
 const clusterProvider = new blueprints.GenericClusterProvider({
   clusterName: 'mycluster1',
   version: KubernetesVersion.V1_27,
-  autoscalingNodeGroups:[
+  managedNodeGroups: [
+    {
+      id: 'mycluster1-base',
+      amiType: NodegroupAmiType.AL2_X86_64,
+      enableSsmPermissions: true,
+      instanceTypes: [InstanceType.of(InstanceClass.T3, InstanceSize.LARGE)],
+      minSize: 2,
+      nodeGroupCapacityType: CapacityType.SPOT,
+    }
+  ]
+  /*autoscalingNodeGroups:[
     {
       id: 'mycluster1-base',
       autoScalingGroupName: 'mycluster1-base',
@@ -176,7 +178,7 @@ const clusterProvider = new blueprints.GenericClusterProvider({
       minSize: 3,
       //spotPrice: '0.6',
     }
-  ],
+  ],*/
 });
 
 const stack = blueprints.EksBlueprint.builder()
