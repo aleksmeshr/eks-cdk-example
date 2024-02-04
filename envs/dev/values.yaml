@@ -8,11 +8,11 @@ spec:
   destination:
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://github.com/aws-samples/eks-blueprints-workloads
+    repoURL: https://github.com/aleksmeshr/eks-cdk-example
     targetRevision: main
   env: dev
   clusterName: mycluster1
-  blueprint: 'cdk' # cdk | terraform
+  blueprint: 'cdk'
   karpenterInstanceProfile:
   ingress:
     type: 'alb' # nginx | alb
